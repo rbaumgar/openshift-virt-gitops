@@ -1,0 +1,83 @@
+apiVersion: 'kubevirt.io/v1'
+kind: 'VirtualMachine'
+metadata:
+  labels:
+    app: 'fedora01'
+    vm.kubevirt.io/template: 'fedora-server-small'
+    vm.kubevirt.io/template.namespace: 'openshift'
+    vm.kubevirt.io/template.revision: '1'
+    vm.kubevirt.io/template.version: 'v0.26.0'
+  name: 'fedora01'
+  namespace: 'vmexamples'
+spec:
+  dataVolumeTemplates:
+    - apiVersion: 'cdi.kubevirt.io/v1beta1'
+      kind: 'DataVolume'
+      metadata:
+        creationTimestamp: null
+        name: 'fedora01'
+      spec:
+        sourceRef:
+          kind: 'DataSource'
+          name: 'fedora'
+          namespace: 'openshift-virtualization-os-images'
+        storage:
+          resources:
+            requests:
+              storage: '30Gi'
+  running: false
+  template:
+    metadata:
+      annotations:
+        vm.kubevirt.io/flavor: 'small'
+        vm.kubevirt.io/os: 'fedora'
+        vm.kubevirt.io/workload: 'server'
+      creationTimestamp: null
+      labels:
+        kubevirt.io/domain: 'fedora01'
+        kubevirt.io/size: 'small'
+    spec:
+      architecture: 'amd64'
+      domain:
+        cpu:
+          cores: 1
+          sockets: 1
+          threads: 1
+        devices:
+          disks:
+            - disk:
+                bus: 'virtio'
+              name: 'rootdisk'
+            - disk:
+                bus: 'virtio'
+              name: 'cloudinitdisk'
+          interfaces:
+            - macAddress: '02:9e:19:00:00:09'
+              masquerade: {}
+              model: 'virtio'
+              name: 'default'
+          networkInterfaceMultiqueue: true
+          rng: {}
+        features:
+          acpi: {}
+          smm:
+            enabled: true
+        firmware:
+          bootloader:
+            efi: {}
+        machine:
+          type: 'pc-q35-rhel9.2.0'
+        memory:
+          guest: '2Gi'
+        resources: {}
+      networks:
+        - name: 'default'
+          pod: {}
+      terminationGracePeriodSeconds: 180
+      volumes:
+        - dataVolume:
+            name: 'fedora01'
+          name: 'rootdisk'
+        - cloudInitConfigDrive:
+            userData: "#cloud-config\nuser: fedora\npassword: fedora01\nchpasswd: { expire: False }"
+          name: 'cloudinitdisk'
