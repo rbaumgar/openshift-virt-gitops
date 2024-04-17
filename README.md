@@ -78,11 +78,16 @@ oc -n dev-demo-db exec -it  $dbpod -- curl http://$endpoint
 This is demo VM 1 :)
 ```
 
+## Install NMstate
+```sh
+oc apply -f nmstate
+```
+
 ## Install VMExamples
 ```sh
 oc apply -f vmexamples
 ```
-In the original labs, the disk source is: `http://192.168.123.100:81/Fedora35.qcow2` and `http://192.168.123.100:81/Windows2019.iso`.
+In the original labs, the disk source is `http://192.168.123.100:81/Fedora35.qcow2` and `http://192.168.123.100:81/Windows2019.iso`.
 
 ## Migration Toolkit for Virtualization
 ```sh
