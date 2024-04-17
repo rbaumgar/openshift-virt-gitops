@@ -1,0 +1,18 @@
+apiVersion: forklift.konveyor.io/v1beta1
+kind: NetworkMap
+metadata:
+  name: mapping-segment
+  namespace: openshift-mtv
+spec:
+  map:
+    - destination:
+        type: pod
+      source:
+        id: dvportgroup-1916
+  provider:
+    destination:
+      name: host
+      namespace: openshift-mtv
+    source:
+      name: vmware
+      namespace: openshift-mtv

@@ -1,0 +1,29 @@
+apiVersion: forklift.konveyor.io/v1beta1
+kind: Plan
+metadata:
+  name: move-webapp-vmware
+  namespace: openshift-mtv
+spec:
+  archived: false
+  description: ''
+  map:
+    network:
+      name: move-webapp-vmware-drc7v
+      namespace: openshift-mtv
+    storage:
+      name: move-webapp-vmware-mdhvd
+      namespace: openshift-mtv
+  provider:
+    destination:
+      name: host
+      namespace: openshift-mtv
+    source:
+      name: vmware
+      namespace: openshift-mtv
+  targetNamespace: vmexamples
+  vms:
+    - hooks: []
+      id: vm-1550719
+    - hooks: []
+      id: vm-1550726
+  warm: false
