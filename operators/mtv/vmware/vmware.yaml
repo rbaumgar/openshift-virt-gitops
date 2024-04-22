@@ -8,6 +8,6 @@ spec:
     name: vmware-credentials
     namespace: openshift-mtv
   settings:
-    vddkInitImage: 'image-registry.openshift-image-registry.svc:5000/openshift/vddk:latest'
+    vddkInitImage: 'image-registry.openshift-image-registry.svc:5000/vmexamples/vddk:latest'
   type: vsphere
   url: 'https://portal.vc.opentlc.com/sdk'

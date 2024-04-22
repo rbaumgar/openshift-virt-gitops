@@ -2,7 +2,7 @@ kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
   name: vddk-build
-  namespace: openshift
+  namespace: vmexamples
 spec:
   nodeSelector: {}
   output:
@@ -23,7 +23,7 @@ spec:
   source:
     type: Dockerfile
     dockerfile: >
-      FROM registry.access.redhat.com/ubi8/ubi-minimal 
+      FROM registry.access.redhat.com/ubi8/ubi-minimal
 
       RUN curl -L -O
       www.opentlc.com/download/ocp4_baremetal/VMware-vix-disklib-7.0.3-20134304.x86_64.tar.gz

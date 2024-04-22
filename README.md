@@ -80,12 +80,20 @@ This is demo VM 1 :)
 
 ## Install NMstate
 ```sh
-oc apply -f nmstate
+# NMstate Operator
+oc create -f operators/nmstate/operator-nmstate.yaml
+# nmstate CR
+oc apply -f operators/nmstate/nmstate.yaml
 ```
 
 ## Install VMExamples
 ```sh
-oc apply -f vmexamples
+# Fedora with template (current 39)
+oc apply -f vmexamples/fedora01.yaml
+# Fedora with boot image downloaded (35)
+oc apply -f vmexamples/fedora02.yaml
+# Windows19 with template and ISO image downloaded and install script
+oc apply -f vmexamples/windows.yaml
 ```
 In the original labs, the disk source is `http://192.168.123.100:81/Fedora35.qcow2` and `http://192.168.123.100:81/Windows2019.iso`.
 
@@ -96,3 +104,18 @@ oc create -f operators/mtv/operator-mtv.yaml
 # ForkliftController CR
 oc apply -f operators/mtv/forklift.yaml
 ```
+
+## Migrated VM
+The VMs are configured with static IPs, it is needed to reconfigure them to use DHCP.
+
+- Start the VM web01/web02
+- Open web01/web02, start the VM and access to the Console
+- Login with user root and password R3dh....
+- Run the following commands
+```sh
+nmcli con del "Wired connection 1"
+nmcli con add type ethernet ifname eth0
+# Review the IP address is 10.0.2.2 now
+ip a
+```
+
