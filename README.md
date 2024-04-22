@@ -28,6 +28,8 @@ oc adm policy add-role-to-user admin system:serviceaccount:openshift-gitops:open
 oc adm policy add-role-to-user admin system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller -n prod-demo-db
 ```
 
+With the group `cluster-admins` you can easily define OpenShift users as admins in OpenShift Gitops. By default the `admin` user is a member of this group and you can login via Openshift no longer is the gitops password needed.
+
 ## Demonstrate route to production VMs:
 ```sh
 oc get vmi -n prod-demo-vm -o custom-columns=VirtualMachineInstance:.metadata.name,Phase:.status.phase
