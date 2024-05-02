@@ -1,0 +1,15 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: rhel9
+  namespace: vmexamples
+spec:
+  to:
+    kind: Service
+    name: rhel9-cockpit
+    weight: 100
+  port:
+    targetPort: 9090
+  tls:
+    termination: passthrough
+  wildcardPolicy: None

@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: rhel9-cockpit
+  namespace: vmexamples
+spec:
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+  selector:
+    vm.kubevirt.io/name: rhel9
+
