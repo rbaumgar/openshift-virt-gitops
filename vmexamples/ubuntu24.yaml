@@ -94,7 +94,7 @@ spec:
             name: 'ubuntu-vm'
           name: 'rootdisk'
         - cloudInitNoCloud:
-            userData: "#cloud-config\nuser: fedora\npassword: 8l3w-3jk4-itjo\nchpasswd: { expire: False }"
+            userData: "#cloud-config\nuser: ubuntu\npassword: ubuntu\nchpasswd: { expire: False }"
           name: 'cloudinitdisk'
         - dataVolume:
             name: 'ubuntu-vm-installation-cdrom'
