@@ -1,25 +1,35 @@
 apiVersion: 'kubevirt.io/v1'
 kind: 'VirtualMachine'
 metadata:
+  annotations:
+    vm.kubevirt.io/validations: "[\n  {\n    \"name\": \"minimal-required-memory\",\n    \"path\": \"jsonpath::.spec.domain.memory.guest\",\n    \"rule\": \"integer\",\n    \"message\": \"This VM requires more memory.\",\n    \"min\": 1073741824\n  }\n]\n"
   labels:
-    app: 'rhel9'
+    app: 'ubuntu-vm'
     kubevirt.io/dynamic-credentials-support: 'true'
-    vm.kubevirt.io/template: 'rhel9-server-small'
-    vm.kubevirt.io/template.namespace: 'openshift'
-    vm.kubevirt.io/template.revision: '1'
-    vm.kubevirt.io/template.version: 'v0.27.0'
+  name: 'ubuntu-vm'
 spec:
   dataVolumeTemplates:
     - apiVersion: 'cdi.kubevirt.io/v1beta1'
       kind: 'DataVolume'
       metadata:
+        annotations:
+          cdi.kubevirt.io/storage.bind.immediate.requested: 'true'
         creationTimestamp: null
-        name: 'rhel9'
+        name: 'ubuntu-vm'
       spec:
-        sourceRef:
-          kind: 'DataSource'
-          name: 'rhel9'
-          namespace: 'openshift-virtualization-os-images'
+        source:
+          blank: {}
+        storage:
+          resources:
+            requests:
+              storage: '30Gi'
+    - metadata:
+        creationTimestamp: null
+        name: 'ubuntu-vm-installation-cdrom'
+      spec:
+        source:
+          http:
+            url: 'https://mirror.easyname.at/ubuntu-releases/24.04/ubuntu-24.04-live-server-amd64.iso'
         storage:
           resources:
             requests:
@@ -29,11 +39,11 @@ spec:
     metadata:
       annotations:
         vm.kubevirt.io/flavor: 'small'
-        vm.kubevirt.io/os: 'rhel9'
+        vm.kubevirt.io/os: 'ubuntu'
         vm.kubevirt.io/workload: 'server'
       creationTimestamp: null
       labels:
-        kubevirt.io/domain: 'rhel9'
+        kubevirt.io/domain: 'ubuntu-vm'
         kubevirt.io/size: 'small'
     spec:
       architecture: 'amd64'
@@ -44,14 +54,20 @@ spec:
           threads: 1
         devices:
           disks:
-            - disk:
+            - bootOrder: 2
+              disk:
                 bus: 'virtio'
               name: 'rootdisk'
-            - disk:
+            - bootOrder: 3
+              disk:
                 bus: 'virtio'
               name: 'cloudinitdisk'
+            - bootOrder: 4
+              cdrom:
+                bus: 'sata'
+              name: 'installation-cdrom'
           interfaces:
-            - macAddress: '02:43:c4:00:00:06'
+            - macAddress: '02:43:c4:00:00:0a'
               masquerade: {}
               model: 'virtio'
               name: 'default'
@@ -75,8 +91,11 @@ spec:
       terminationGracePeriodSeconds: 180
       volumes:
         - dataVolume:
-            name: 'rhel9'
+            name: 'ubuntu-vm'
           name: 'rootdisk'
         - cloudInitNoCloud:
-            userData: "#cloud-config\nuser: cloud-user\npassword: rhel9\nchpasswd:\n  expire: false\nrh_subscription:\n  activation-key: ocp-freeddns\n  org: '10079595'\n"
+            userData: "#cloud-config\nuser: fedora\npassword: 8l3w-3jk4-itjo\nchpasswd: { expire: False }"
           name: 'cloudinitdisk'
+        - dataVolume:
+            name: 'ubuntu-vm-installation-cdrom'
+          name: 'installation-cdrom'

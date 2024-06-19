@@ -121,3 +121,17 @@ nmcli con add type ethernet ifname eth0
 ip a
 ```
 
+## Create Ubuntu VM from ISO download
+
+```sh
+# Ubuntu from ISO
+oc apply -f vmexamples/ubuntu.yaml
+```
+
+When installation is done, install the qemu-guest-agent as root
+```sh
+sudo -i
+apt -y install qemu-guest-agent
+systemctl enable qemu-guest-agent
+systemctl start qemu-guest-agent
+```

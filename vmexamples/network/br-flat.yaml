@@ -3,6 +3,7 @@ kind: NodeNetworkConfigurationPolicy
 metadata:
   name: br-flat
 spec:
+  maxUnavailable: 1
   nodeSelector:
     node-role.kubernetes.io/worker: ""
   desiredState:
