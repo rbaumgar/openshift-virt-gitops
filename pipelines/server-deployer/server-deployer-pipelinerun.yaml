@@ -1,0 +1,30 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: server-deployer-run-
+spec:
+  pipelineRef:
+    name: server-deployer
+
+#    params:
+#      - name: catalog
+#        value: kubevirt-tekton-tasks
+#      - name: type
+#        value: artifact
+#      - name: kind
+#        value: task
+#      - name: name
+#        value: modify-data-object
+#      - name: version
+#        value: v0.22.0
+#    resolver: hub    
+  taskRunSpecs:
+    - pipelineTaskName: modify-data-object
+      # taskServiceAccountName: modify-data-object-task
+    - pipelineTaskName: generate-ssh-keys
+      # taskServiceAccountName: generate-ssh-keys-task
+    - pipelineTaskName: create-vm-from-manifest
+      # taskServiceAccountName: create-vm-from-manifest-task
+    - pipelineTaskName: execute-in-vm
+      # taskServiceAccountName: execute-in-vm-task

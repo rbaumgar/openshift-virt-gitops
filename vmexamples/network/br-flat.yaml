@@ -1,3 +1,4 @@
+# OLD! example for SDN
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
 metadata:

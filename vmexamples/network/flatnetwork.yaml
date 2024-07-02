@@ -1,3 +1,4 @@
+# OLD! example for SDN
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:

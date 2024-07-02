@@ -1,39 +1,26 @@
 apiVersion: 'kubevirt.io/v1'
 kind: 'VirtualMachine'
 metadata:
-  annotations:
-    vm.kubevirt.io/validations: "[\n  {\n    \"name\": \"minimal-required-memory\",\n    \"path\": \"jsonpath::.spec.domain.memory.guest\",\n    \"rule\": \"integer\",\n    \"message\": \"This VM requires more memory.\",\n    \"min\": 1073741824\n  }\n]\n"
   labels:
-    app: 'ubuntu-vm'
+    app: 'ubuntu'
     kubevirt.io/dynamic-credentials-support: 'true'
-  name: 'ubuntu-vm'
+  name: 'ubuntu'
+  namespace: 'vmexamples'
 spec:
   dataVolumeTemplates:
     - apiVersion: 'cdi.kubevirt.io/v1beta1'
       kind: 'DataVolume'
       metadata:
-        annotations:
-          cdi.kubevirt.io/storage.bind.immediate.requested: 'true'
         creationTimestamp: null
-        name: 'ubuntu-vm'
-      spec:
-        source:
-          blank: {}
-        storage:
-          resources:
-            requests:
-              storage: '30Gi'
-    - metadata:
-        creationTimestamp: null
-        name: 'ubuntu-vm-installation-cdrom'
+        name: 'ubuntu'
       spec:
         source:
           http:
-            url: 'https://mirror.easyname.at/ubuntu-releases/24.04/ubuntu-24.04-live-server-amd64.iso'
+            url: 'https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img'
         storage:
           resources:
             requests:
-              storage: '30Gi'
+              storage: '20Gi'
   running: false
   template:
     metadata:
@@ -43,7 +30,7 @@ spec:
         vm.kubevirt.io/workload: 'server'
       creationTimestamp: null
       labels:
-        kubevirt.io/domain: 'ubuntu-vm'
+        kubevirt.io/domain: 'ubuntu'
         kubevirt.io/size: 'small'
     spec:
       architecture: 'amd64'
@@ -54,21 +41,14 @@ spec:
           threads: 1
         devices:
           disks:
-            - bootOrder: 2
-              disk:
+            - disk:
                 bus: 'virtio'
               name: 'rootdisk'
-            - bootOrder: 3
-              disk:
+            - disk:
                 bus: 'virtio'
               name: 'cloudinitdisk'
-            - bootOrder: 4
-              cdrom:
-                bus: 'sata'
-              name: 'installation-cdrom'
           interfaces:
-            - macAddress: '02:43:c4:00:00:0a'
-              masquerade: {}
+            - masquerade: {}
               model: 'virtio'
               name: 'default'
           networkInterfaceMultiqueue: true
@@ -91,11 +71,19 @@ spec:
       terminationGracePeriodSeconds: 180
       volumes:
         - dataVolume:
-            name: 'ubuntu-vm'
+            name: 'ubuntu'
           name: 'rootdisk'
         - cloudInitNoCloud:
-            userData: "#cloud-config\nuser: ubuntu\npassword: ubuntu\nchpasswd: { expire: False }"
+            userData: |-
+              #cloud-config
+              user: ubuntu
+              password: ubuntu
+              chpasswd: { expire: False }
+              runcmd:
+                - apt update
+                - apt -y install qemu-guest-agent
+                - systemctl enable qemu-guest-agent
+                - systemctl start qemu-guest-agent
           name: 'cloudinitdisk'
-        - dataVolume:
-            name: 'ubuntu-vm-installation-cdrom'
-          name: 'installation-cdrom'
+#
+# 'user' of type string is deprecated in 22.2 and scheduled to be removed in 27.2. Use 'users' list instead.

@@ -1,0 +1,15 @@
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  annotations:
+    description: localnet1 network is mapped to the br-ex bridge (OVN)
+  name: localnet1-nncp
+spec:
+  desiredState:
+    ovn:
+      bridge-mappings:
+        - bridge: br-ex
+          localnet: localnet1
+          state: present
+  nodeSelector:
+    node-role.kubernetes.io/worker: ''

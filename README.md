@@ -97,7 +97,18 @@ oc apply -f vmexamples/fedora02.yaml
 # Windows19 with template and ISO image downloaded and install script
 oc apply -f vmexamples/windows.yaml
 ```
+
 In the original labs, the disk source is `http://192.168.123.100:81/Fedora35.qcow2` and `http://192.168.123.100:81/Windows2019.iso`.
+
+## Attaching a virtual machine to the OVN-Kubernetes secondary network
+```sh
+oc apply -f vmexamples/network/localnet1-nncp.yaml
+oc apply -f vmexamples/network/localnet1-network.yaml
+```
+
+Attention: When you use a different NS/project, you have to change the value of `netAttachDefName` in `localnet1-network.yaml`.
+
+Edit the virtual machine, configuration ,add network interface and select `Network: vmexamples/localnet1-network`.
 
 ## Migration Toolkit for Virtualization
 ```sh
@@ -128,10 +139,15 @@ ip a
 oc apply -f vmexamples/ubuntu.yaml
 ```
 
-When installation is done, install the qemu-guest-agent as root
+When the installation is done, install the qemu-guest-agent as root (should already be done by the cloud-init)
 ```sh
 sudo -i
+apt update
 apt -y install qemu-guest-agent
 systemctl enable qemu-guest-agent
 systemctl start qemu-guest-agent
 ```
+
+Windows 2k22
+https://software-static.download.prss.microsoft.com/sg/download/888969d5-f34g-4e03-ac9d-1f9786c66749/SERVER_EVAL_x64FRE_en-us.iso
+https://software-download.microsoft.com/download/sg/20348.169.210806-2348.fe_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso
