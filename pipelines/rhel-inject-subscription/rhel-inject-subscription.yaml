@@ -1,0 +1,94 @@
+#
+# https://www.redhat.com/en/blog/how-to-automatically-subscribe-rhel-vms-with-openshift-pipelines
+#
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: rhel-inject-subscription
+spec:
+  params:
+    - description: Activation key that is injected into the VM template's cloud-init configuration
+      name: activationKey
+      type: string
+    - description: Organization that is injected into the VM template's cloud-init configuration
+      name: organization
+      type: string
+    - default: rhel9-server-small
+      description: Name of the Template which is used to create the subscribed Template.
+      name: sourceTemplateName
+      type: string
+    - default: openshift
+      description: Namespace of the Template which is used to create the subscribed Template.
+      name: sourceTemplateNamespace
+      type: string
+    - default: rhel9-server-small-subscribed
+      description: Name of the subscribed RHEL Template which is created.
+      name: subscribedTemplateName
+      type: string
+    - default: Subscribed Red Hat Enterprise Linux 9.0 VM
+      description: Display name of the subscribed RHEL Template which is created.
+      name: subscribedTemplateDisplayName
+      type: string
+    - default: 'true'
+      description: Allow to replace an already existing subscribed Template.
+      name: allowReplaceSubscribedTemplate
+      type: string
+  results:
+    - description: Name of the created subscribed Template
+      name: subscribedTemplateName
+      value: $(tasks.copy-template.results.name)
+    - description: Namespace of the created subscribed Template
+      name: subscribedTemplateNamespace
+      value: $(tasks.copy-template.results.namespace)
+  tasks:
+    - name: copy-template
+      params:
+        - name: sourceTemplateName
+          value: $(params.sourceTemplateName)
+        - name: sourceTemplateNamespace
+          value: $(params.sourceTemplateNamespace)
+        - name: targetTemplateName
+          value: $(params.subscribedTemplateName)
+        - name: allowReplace
+          value: $(params.allowReplaceSubscribedTemplate)
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: copy-template
+          - name: namespace
+            value: openshift-cnv
+        resolver: cluster
+      timeout: 10m0s
+    - name: modify-vm-template
+      params:
+        - name: templateName
+          value: $(tasks.copy-template.results.name)
+        - name: templateAnnotations
+          value:
+            - 'openshift.io/display-name: $(params.subscribedTemplateDisplayName)'
+            - 'template.kubevirt.io/provider: my friendly cluster-admin'
+            - 'template.kubevirt.io/provider-support-level: Full'
+            - 'template.kubevirt.io/provider-url: https://www.my.corp'
+        - name: volumes
+          value:
+            - |
+              {
+                  "cloudInitNoCloud": {
+                      "userData": "#cloud-config\nuser: cloud-user\npassword: ${CLOUD_USER_PASSWORD}\nchpasswd: { expire: False }\nrh_subscription:\n  activation-key: $(params.activationKey)\n  org: $(params.organization)"
+                  },
+                  "name": "cloudinitdisk"
+              }
+      runAfter:
+        - copy-template
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: modify-vm-template
+          - name: namespace
+            value: openshift-cnv
+        resolver: cluster
+      timeout: 10m0s

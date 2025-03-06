@@ -45,20 +45,36 @@ modify-data-object        1m
 modify-vm-template        1m
 modify-windows-iso-file   1m
 wait-for-vmi-status       1m
+```
 
-kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/modify-data-object/4.15.2/modify-data-object.yaml
-kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/disk-virt-customize/4.15.2/disk-virt-customize.yaml
+Since 4.16: The KubeVirt Tekton tasks are now shipped as a part of the OpenShift Container Platform Pipelines catalog
 
-kubectl apply -f https://github.com/kubevirt/kubevirt-tekton-tasks/raw/v0.22.0/release/tasks/modify-data-object/modify-data-object.yaml
-kubectl apply -f https://github.com/kubevirt/kubevirt-tekton-tasks/raw/v0.22.0/release/tasks/generate-ssh-keys/generate-ssh-keys.yaml
-kubectl apply -f https://github.com/kubevirt/kubevirt-tekton-tasks/raw/v0.22.0/release/tasks/disk-virt-customize/disk-virt-customize.yaml
-kubectl apply -f https://github.com/kubevirt/kubevirt-tekton-tasks/raw/v0.22.0/release/tasks/create-vm-from-manifest/create-vm-from-manifest.yaml
-kubectl apply -f https://github.com/kubevirt/kubevirt-tekton-tasks/raw/v0.22.0/release/tasks/execute-in-vm/execute-in-vm.yaml
-task.tekton.dev/modify-data-object created
-task.tekton.dev/generate-ssh-keys created
-task.tekton.dev/disk-virt-customize created
+You will find the tasks under https://github.com/openshift-pipelines/tektoncd-catalog/tree/p/tasks
+For installtion you can use ArtifactHub
+Tasks: https://artifacthub.io/packages/search?repo=redhat-tekton-tasks&page=1
+
+```shell
+export OCPVersion=4.16.2
+kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/cleanup-vm/$OCPVersion/cleanup-vm.yaml
+kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/copy-template/$OCPVersion/copy-template.yaml
+kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/create-vm-from-manifest/$OCPVersion/create-vm-from-manifest.yaml
+kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/create-vm-from-template/$OCPVersion/create-vm-from-template.yaml
+kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/disk-virt-customize/$OCPVersion/disk-virt-customize.yaml
+kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/disk-virt-sysprep/$OCPVersion/disk-virt-sysprep.yaml
+kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/modify-data-object/$OCPVersion/modify-data-object.yaml
+kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/modify-vm-template/$OCPVersion/modify-vm-template.yaml
+kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/modify-windows-iso-file/$OCPVersion/modify-windows-iso-file.yaml
+kubectl apply -f https://github.com/openshift-pipelines/tektoncd-catalog/raw/p/tasks/wait-for-vmi-status/$OCPVersion/wait-for-vmi-status.yaml
+task.tekton.dev/cleanup-vm created
+task.tekton.dev/copy-template created
 task.tekton.dev/create-vm-from-manifest created
-task.tekton.dev/execute-in-vm created
+task.tekton.dev/create-vm-from-template created
+task.tekton.dev/disk-virt-customize created
+task.tekton.dev/disk-virt-sysprep created
+task.tekton.dev/modify-data-object created
+task.tekton.dev/modify-vm-template created
+task.tekton.dev/modify-windows-iso-file created
+task.tekton.dev/wait-for-vmi-status created
 ```
 ???
 

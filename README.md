@@ -94,8 +94,12 @@ oc apply -f operators/nmstate/nmstate.yaml
 oc apply -f vmexamples/fedora01.yaml
 # Fedora with boot image downloaded (35)
 oc apply -f vmexamples/fedora02.yaml
-# Windows19 with template and ISO image downloaded and install script
+# Windows 2019 with template and ISO image downloaded and install script
 oc apply -f vmexamples/windows.yaml
+# Windows 2022 with template and ISO image downloaded and install script
+oc apply -f vmexamples/win2k22.yaml
+# Windows 2025 with template and ISO image downloaded and install script
+oc apply -f vmexamples/win2k25.yaml
 ```
 
 In the original labs, the disk source is `http://192.168.123.100:81/Fedora35.qcow2` and `http://192.168.123.100:81/Windows2019.iso`.
@@ -109,6 +113,12 @@ oc apply -f vmexamples/network/localnet1-network.yaml
 Attention: When you use a different NS/project, you have to change the value of `netAttachDefName` in `localnet1-network.yaml`.
 
 Edit the virtual machine, configuration ,add network interface and select `Network: vmexamples/localnet1-network`.
+
+[Configuration for a localnet topology](https://docs.openshift.com/container-platform/4.15/networking/multiple_networks/configuring-additional-network.html#configuring-additional-network_ovn-kubernetes-configuration-for-a-localnet-topology)
+
+[Creating a NAD for localnet topology using the CLI](https://docs.openshift.com/container-platform/4.15/virt/vm_networking/virt-connecting-vm-to-ovn-secondary-network.html#virt-creating-localnet-nad-cli_virt-connecting-vm-to-ovn-secondary-network)
+
+[Attaching a virtual machine to an OVN-Kubernetes secondary network using the CLI](https://docs.openshift.com/container-platform/4.15/virt/vm_networking/virt-connecting-vm-to-ovn-secondary-network.html#virt-attaching-vm-to-ovn-secondary-nw-cli_virt-connecting-vm-to-ovn-secondary-network)
 
 ## Migration Toolkit for Virtualization
 ```sh
@@ -148,6 +158,11 @@ systemctl enable qemu-guest-agent
 systemctl start qemu-guest-agent
 ```
 
-Windows 2k22
-https://software-static.download.prss.microsoft.com/sg/download/888969d5-f34g-4e03-ac9d-1f9786c66749/SERVER_EVAL_x64FRE_en-us.iso
-https://software-download.microsoft.com/download/sg/20348.169.210806-2348.fe_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso
+Tekton Examples
+https://github.com/tosin2013/openshift-virt-tekton-ref/tree/main/components/kubevirt-pipelines
+fedora-example: Refactor fedora-cleanup pipeline tasks for consistency
+microshift-instance: chore: Update microshift-instance-pipeline.yaml
+ollama-langchain: adding routes
+server-deployer: testing qemu
+windows-bios-installer: adding fedora-example
+windows-efi-installer: adding fedora-example

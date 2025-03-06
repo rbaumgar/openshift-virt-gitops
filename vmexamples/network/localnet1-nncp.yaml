@@ -11,5 +11,6 @@ spec:
         - bridge: br-ex
           localnet: localnet1
           state: present
+  maxUnavailable: 1              
   nodeSelector:
     node-role.kubernetes.io/worker: ''
